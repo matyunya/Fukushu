@@ -1,7 +1,7 @@
 package main
 
 import (
-  "fukushu/Entries"
+  "github.com/matyunya/fukushu/Entries"
   "gopkg.in/telegram-bot-api.v4"
   "log"
   "math/rand"
