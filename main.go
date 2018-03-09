@@ -27,10 +27,7 @@ func getUpdates() {
 
     chatIDs[update.Message.Chat.ID] = struct{}{}
 
-    log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-    entry := getEntry()
-    send(update.Message.Chat.ID, entry.ToString())
+    send(update.Message.Chat.ID, "いらっしゃませ！")
   }
 }
 
@@ -55,7 +52,7 @@ func main() {
   go getUpdates()
 
   for true {
-    time.Sleep(1 * time.Minute)
+    time.Sleep(1 * time.Hour)
     for ID := range chatIDs {
       entry := getEntry()
       send(ID, entry.ToString())
