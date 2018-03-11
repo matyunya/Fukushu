@@ -1,66 +1,52 @@
 package fukushu
 
 import (
-	"encoding/csv"
+	"bufio"
+	"errors"
 	"fmt"
-	"github.com/gocarina/gocsv"
 	"io"
+	"math/rand"
 	"os"
-)
-
-type EngSentence struct {
-	ID       int    `csv:"id"`
-	LangID   string `csv:"lang_id"`
-	Sentence string `csv:"sentence"`
-}
-
-type JaSentence struct {
-	ID       int    `csv:"id"`
-	EngID    int    `csv:"eng_id"`
-	Sentence string `csv:"sentence"`
-}
-
-type Pair struct {
-	Eng *EngSentence
-	Ja  *JaSentence
-}
-
-func (p Pair) ToString() string {
-	return fmt.Sprintf(`%s
-		%s`, p.Ja.Sentence, p.Eng.Sentence)
-}
-
-var (
-	//local marshalled
-	Eng = []*EngSentence{}
-	Ja  = []*JaSentence{}
+	"strings"
 )
 
 func init() {
-	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
-		r := csv.NewReader(in)
-		r.LazyQuotes = true
-		r.Comma = '\011'
-		return r // Allows use tabs as delimiter and use quotes in CSV
-	})
+	rand.Seed(sentenceCount)
+}
 
-	engFile, err := os.OpenFile("en.csv", os.O_RDWR, os.ModePerm)
+const sentenceCount = 149811
+
+func GetRandomSentence() (string, error) {
+	fn := "sentences"
+	n := rand.Intn(sentenceCount)
+	f, err := os.Open(fn)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	defer engFile.Close()
+	defer f.Close()
+	bf := bufio.NewReader(f)
+	var line string
+	for lnum := 0; lnum < n; lnum++ {
+		line, err = bf.ReadString('\n')
+		if err == io.EOF {
+			switch lnum {
+			case 0:
+				return "", errors.New("no lines in file")
+			case 1:
+				return "", errors.New("only 1 line")
+			default:
+				return "", fmt.Errorf("only %d lines", lnum)
+			}
+		}
+		if err != nil {
+			return "", err
+		}
+	}
+	if line == "" {
+		return "", fmt.Errorf("line %d empty", n)
+	}
 
-	if err := gocsv.UnmarshalFile(engFile, &Eng); err != nil {
-		panic(err)
-	}
-
-	jaFile, err := os.OpenFile("ja.csv", os.O_RDWR, os.ModePerm)
-	if err != nil {
-		panic(err)
-	}
-	defer jaFile.Close()
-
-	if err := gocsv.UnmarshalFile(jaFile, &Ja); err != nil {
-		panic(err)
-	}
+	line = strings.Replace(line, "。", `。
+`, -1)
+	return line, nil
 }

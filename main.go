@@ -27,9 +27,8 @@ func getUpdates() {
 
 		chatIDs[update.Message.Chat.ID] = struct{}{}
 
-		send(update.Message.Chat.ID, "いらっしゃませ！")
-		sentence := getSentence()
-		send(update.Message.Chat.ID, sentence.ToString())
+		sentence, _ := fukushu.GetRandomSentence()
+		send(update.Message.Chat.ID, sentence)
 	}
 }
 
@@ -41,20 +40,6 @@ func send(id int64, message string) {
 
 func getEntry() fukushu.Entry {
 	return fukushu.Entries[rand.Intn(len(fukushu.Entries))]
-}
-
-func getSentence() fukushu.Pair {
-	ja := fukushu.Ja[rand.Intn(len(fukushu.Ja))]
-	eng := &fukushu.EngSentence{}
-	for _, en := range fukushu.Eng {
-		if en.ID == ja.EngID {
-			eng = en
-		}
-	}
-	return fukushu.Pair{
-		Eng: eng,
-		Ja:  ja,
-	}
 }
 
 func main() {
@@ -72,8 +57,8 @@ func main() {
 		for ID := range chatIDs {
 			entry := getEntry()
 			send(ID, entry.ToString())
-			sentence := getSentence()
-			send(ID, sentence.ToString())
+			sentence, _ := fukushu.GetRandomSentence()
+			send(ID, sentence)
 		}
 	}
 
