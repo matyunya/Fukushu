@@ -47,7 +47,7 @@ func init() {
 		return r // Allows use tabs as delimiter and use quotes in CSV
 	})
 
-	engFile, err := os.OpenFile("en.csv", os.O_RDWR, os.ModePerm)
+	engFile, err := os.OpenFile("./en.csv", os.O_RDWR, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +61,7 @@ func init() {
 		Eng[en.ID] = en
 	}
 
-	jaFIle, err := os.OpenFile("ja.csv", os.O_RDWR, os.ModePerm)
+	jaFIle, err := os.OpenFile("./ja.csv", os.O_RDWR, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
