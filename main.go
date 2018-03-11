@@ -45,9 +45,14 @@ func getEntry() fukushu.Entry {
 
 func getSentence() fukushu.Pair {
 	ja := fukushu.Ja[rand.Intn(len(fukushu.Ja))]
-	en := fukushu.Eng[ja.EngID]
+	eng := &fukushu.EngSentence{}
+	for _, en := range fukushu.Eng {
+		if en.ID == ja.EngID {
+			eng = en
+		}
+	}
 	return fukushu.Pair{
-		Eng: en,
+		Eng: eng,
 		Ja:  ja,
 	}
 }

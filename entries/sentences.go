@@ -32,10 +32,7 @@ func (p Pair) ToString() string {
 
 var (
 	//local marshalled
-	eng = []*EngSentence{}
-
-	//mapped with ids
-	Eng = map[int]*EngSentence{}
+	Eng = []*EngSentence{}
 	Ja  = []*JaSentence{}
 )
 
@@ -53,14 +50,9 @@ func init() {
 	}
 	defer engFile.Close()
 
-	if err := gocsv.UnmarshalFile(engFile, &eng); err != nil {
+	if err := gocsv.UnmarshalFile(engFile, &Eng); err != nil {
 		panic(err)
 	}
-
-	for _, en := range eng {
-		Eng[en.ID] = en
-	}
-	eng = []*EngSentence{}
 
 	jaFile, err := os.OpenFile("ja.csv", os.O_RDWR, os.ModePerm)
 	if err != nil {
