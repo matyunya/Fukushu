@@ -60,6 +60,7 @@ func init() {
 	for _, en := range eng {
 		Eng[en.ID] = en
 	}
+	eng = []*EngSentence{}
 
 	jaFile, err := os.OpenFile("ja.csv", os.O_RDWR, os.ModePerm)
 	if err != nil {
